@@ -15,7 +15,7 @@
 .envtop	{margin-top: env(safe-area-inset-top);}
 .envbtm	{padding-bottom: env(safe-area-inset-bottom);}
 
-.none	{display:none !important;}	/* for glb canvas */
+.none	{display:none !important;}
 .flex	{display:flex;}
 .flexCol{display:flex; flex-flow:column;}
 .box	{box-sizing:border-box;}
@@ -23,7 +23,7 @@
 .rel	{position: relative;}
 .scrollx{overflow-x: auto; scrollbar-width:none;}
 .bold	{font-weight: bold;}
-.h100	{height:100%;}	/* for glb canvas */
+.h100	{height:100%;}
 .w100	{width:100%;}
 .o62	{opacity:.62;}
 .o38	{opacity:.38;}
@@ -44,7 +44,7 @@ body, html	{overflow:hidden;}
 *			{-webkit-user-select:none; user-select:none; outline:none; -webkit-tap-highlight-color:transparent;}
 body		{margin:0; padding:0; font-family:sans-serif;}
 canvas,input{border:none; outline:none; font-size:initial;}
-body,input,textarea{font-size:13px;}
+/* body,input,textarea{font-size:13px;} */
 ::placeholder {opacity: 0.5;}
 ::-webkit-scrollbar {display:none;}
 
@@ -54,6 +54,10 @@ body,input,textarea{font-size:13px;}
 .btmPad			{padding:11px 11px max(11px, env(safe-area-inset-bottom)) 11px; box-sizing:border-box;}
 .prdTab			{opacity:0; padding:calc(env(safe-area-inset-top) + 4px) 11px 0; height:calc(100vh - max(11px, env(safe-area-inset-bottom)) - 44px - 11px);}
 .prdTab.sel		{opacity:1; z-index:11 !important;}
+
+.pagerx				{overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; display:flex;}
+.pagery				{overflow-y:auto; scroll-snap-type:y mandatory; -webkit-overflow-scrolling:touch; display:flex; flex-flow:column;}
+.pagerx>*, .pagery>*{scroll-snap-align:start; scroll-snap-stop:always; flex:none;}
 
 /* background color based on wechat webview */
 @media (prefers-color-scheme: dark) {
@@ -71,8 +75,8 @@ body,input,textarea{font-size:13px;}
 }
 </style>
 
-<script src="js/util.js"></script>
-<script src="js/echo.js"></script>
+<script src="js/util.js?t=5"></script>
+<script src="js/echo.js?t=5"></script>
 <!-- iconfont for app -->
 <script src="//at.alicdn.com/t/c/font_4443303_pz96c6w6zh.js"></script>
 </head>
