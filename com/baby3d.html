@@ -20,9 +20,6 @@
 </style>
 
 <style>
-.pagerx				{overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
-.pagery				{overflow-y:auto; scroll-snap-type:y mandatory; -webkit-overflow-scrolling:touch; }
-.pagerx>*, .pagery>*{scroll-snap-align:start; scroll-snap-stop:always;}
 </style>
 
 
@@ -30,12 +27,12 @@
 	<canvas id="glb" class="w100 abs"></canvas>
 	<div id="refresh" onclick="location.reload();" class="abs round vc hc">刷新</div>
 
-	<div id="btm" class="abs box w100 pagery" style="bottom:calc(0px - env(safe-area-inset-top)); height:calc(max(11px, env(safe-area-inset-bottom)) + 4*44px + 2*11px); line-height:44px;">
-		<div class="btmPad">
+	<div id="btm" class="abs box w100 flex pagery" style="bottom:calc(0px - env(safe-area-inset-top)); height:calc(max(11px, env(safe-area-inset-bottom)) + 4*44px + 2*11px); line-height:44px;">
+		<div class="btmPad w100 box">
 			<div id="com" class="round w100" style="height:132px;"></div>
 			<div id="com" class="round w100" style="height:44px;  margin-top:11px;"></div>
 		</div>
-		<div class="btmPad">
+		<div class="btmPad w100 box">
 			<div id="com" class="round" style="height:132px;">
 				<div class="vc w100 box">
 					<div id="parts" class="vc scrollx w1" style="width:0;"></div>
@@ -54,15 +51,15 @@
 				<div id="lovePrd" ><svg class="ic44" aria-hidden="true" style="fill:#f63;"><use xlink:href="#love_hover"></use></svg></div>
 			</div>
 		</div>
-		<div class="btmPad">
+		<div class="btmPad w100 box">
 			<div id="com" class="round w100" style="height:132px;"></div>
 			<div id="com" class="round w100" style="height:44px;  margin-top:11px;"></div>
 		</div>
 	</div>
 </bi>
 
-
-<script src="https://unpkg.com/babylonjs@6.44.0/babylon.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/6.44.0/babylon.min.js"></script>
+<!-- <script src="https://unpkg.com/babylonjs@6.44.0/babylon.js"></script> -->
 <script src="https://unpkg.com/babylonjs-loaders@6.44.0/babylonjs.loaders.min.js"></script>
 <script src="js/baby.js"></script>
 <script>
@@ -230,5 +227,8 @@ if (Util.isMobile) canvas.addEventListener('click', ev => {
 	reloadEngine()
 })
 
-document.querySelector('#btm'	).scrollTo({top:209})
+Util.ViewPager('#btm', 1, (oldIdx, newIdx)=> {
+	if (oldIdx!=1) return
+	document.querySelector('#btm>:nth-child(2)'	).scrollIntoView({behavior:'instant'})
+})
 </script>
