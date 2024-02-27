@@ -1,0 +1,23 @@
+<style>
+#prdArgs	{overflow-y:auto; }
+#prdArgs .title	{font-weight:bold; font-size:1.5em; margin:2em 0 5.5px;}
+</style>
+
+
+<bi id="prdArgs" class="abs box covers w100 flexCol prdTab"></bi>
+
+
+<script type="module">
+function loadProductArgs(prd) {
+	document.querySelector('body>#prdArgs').innerHTML	= `
+		<div class="title">简介</div>
+		<div style="line-height:2;">${prd.info.replaceAll('\n', '</br>')}</div>
+		<div class="title">价格</div>
+		<div style="line-height:2.5;">${prd.prices.map(it => `<div class="vc"> <div class="w1">${it[0]}</div> <div class="w3">${it[1]}</div> </div>`).join('')}</div>
+		<div class="title">参数</div>
+		<div style="line-height:2.5;">
+		${prd.args.map(it => `<div class="vc"> <div class="w1">${it.k}</div> <div class="w3">${it.v}</div> </div>`).join('')}
+		</div>`
+}
+window.addEventListener('loadProductArgs', ev => loadProductArgs(ev.detail))
+</script>

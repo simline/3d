@@ -1,0 +1,99 @@
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>3D设计 共创 众筹</title>
+<meta media="(prefers-color-scheme:light)"  name="apple-mobile-web-app-capable" content="no">
+<meta media="(prefers-color-scheme:dark )"  name="apple-mobile-web-app-capable" content="yes">
+<!-- <meta media="(prefers-color-scheme:light)" name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta media="(prefers-color-scheme:dark )" name="apple-mobile-web-app-status-bar-style" content="black-translucent" /> -->
+<!-- safari page top background -->
+<meta media="(prefers-color-scheme:light)" name="theme-color" content="#ececec" />
+<meta media="(prefers-color-scheme:dark )" name="theme-color" content="#111111" />
+<meta name="viewport" content="width=device-width, viewport-fit=cover, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- global -->
+<style>
+.full	{height:100vh !important; width:100vw !important;}
+.envtop	{margin-top: env(safe-area-inset-top);}
+.envbtm	{padding-bottom: env(safe-area-inset-bottom);}
+
+.none	{display:none !important;}	/* for glb canvas */
+.flex	{display:flex;}
+.flexCol{display:flex; flex-flow:column;}
+.box	{box-sizing:border-box;}
+.abs	{position: absolute;}
+.rel	{position: relative;}
+.scrollx{overflow-x: auto; scrollbar-width:none;}
+.bold	{font-weight: bold;}
+.h100	{height:100%;}	/* for glb canvas */
+.w100	{width:100%;}
+.o62	{opacity:.62;}
+.o38	{opacity:.38;}
+.o100	{opacity:1;}
+.ro180	{transform:rotate(180deg);}
+.w1		{flex:1;}	.w2		{flex:2;}
+.w3		{flex:3;}	.w4		{flex:4;}
+.w5		{flex:5;}	.w6		{flex:6;}
+.vc		{display:flex; align-items:center;}
+.hc		{display:flex; justify-content:center;}
+.ic22	{background:#0000; width:22px; height:22px; flex-shrink:0;}
+.ic44	{background:#0000; width:22px; height:22px; flex-shrink:0; margin:11px;}
+</style>
+
+<!-- element style -->
+<style>
+body, html	{overflow:hidden;}
+*			{-webkit-user-select:none; user-select:none; outline:none; -webkit-tap-highlight-color:transparent;}
+body		{margin:0; padding:0; font-family:sans-serif;}
+canvas,input{border:none; outline:none; font-size:initial;}
+body,input,textarea{font-size:13px;}
+::placeholder {opacity: 0.5;}
+::-webkit-scrollbar {display:none;}
+
+.round			{border-radius:11px; -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);}
+.htop			{height:36px;}
+.finder			{border:none; box-sizing: border-box; padding: 0 calc(11px + 36px) 0 11px; background:transparent;}
+.btmPad			{padding:11px 11px max(11px, env(safe-area-inset-bottom)) 11px; box-sizing:border-box;}
+.prdTab			{opacity:0; padding:calc(env(safe-area-inset-top) + 4px) 11px 0; height:calc(100vh - max(11px, env(safe-area-inset-bottom)) - 44px - 11px);}
+.prdTab.sel		{opacity:1; z-index:11 !important;}
+
+/* background color based on wechat webview */
+@media (prefers-color-scheme: dark) {
+	body		{background:#111111; --shadow-c:#1111; --bg-c:#11111155;}
+	body,input,textarea {color:#bbb;}
+	.ic22,.ic44 {fill:#bbb;}
+	.round		{background:#6662;}
+}
+
+@media (prefers-color-scheme: light) {
+	body		{background:#ececec;  --shadow-c:#0004; --bg-c:#ececec99;}
+	body,input,textarea {color:#121419;}
+	.ic22,.ic44 {fill:black;}
+	.round		{background:#fff6;}
+}
+</style>
+
+<script src="/js/util.js"></script>
+<script src="/js/echo.js"></script>
+<!-- iconfont for app -->
+<script src="//at.alicdn.com/t/c/font_4443303_pz96c6w6zh.js"></script>
+</head>
+
+<body class="box full">
+<div id="top" class="envtop vc abs box w100" style="padding:4px 11px; height:44px; gap:11px; z-index:1;">
+	<div class="vc hc bold round htop" style="min-width:7em;">设计 · 数码</div>
+	<div class="w1 round rel">
+		<input placeholder="搜索关键字" class="finder bold htop w100" value="ITX主机 3.72L"/>
+		<svg aria-hidden="true" class="abs ic22 o38" style="top:7px;right:7px;"><use xlink:href="#find-fill"></use></svg>
+	</div>
+
+	<img class="round htop box" style="width:36px; background:#f305;" src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraightStrand&accessoriesType=Prescription02&hairColor=Red&facialHairType=Blank&clotheType=Hoodie&eyeType=Happy&eyebrowType=Default&mouthType=Smile&skinColor=Pale"/>
+</div>
+<script>
+Util.loadComponent([ 'baby3d', 'prdArgs', 'prdIdea', 'prdSell', 'prdInfo', ])
+window.addEventListener('load', echo.init)
+window.addEventListener("visibilitychange", () => {
+	echo.uploadStatus(document.visibilityState)
+})
+</script>
+</body></html>

@@ -1,0 +1,59 @@
+<style>
+#prdIdea .tab			{opacity:.38; }
+#prdIdea .tab.sel		{opacity:  1; color:#f63; fill:#f63; font-weight:bold;}
+
+#prdIdea>#list			{overflow-y:auto;}
+#prdIdea>#list>*					{padding:11px 11px 5.5px; box-sizing:border-box; margin-bottom:11px; border-radius:11px; background:#8881;}
+#prdIdea>#list>*>:first-child		{font-weight:bold; margin-bottom:11px;}
+#prdIdea>#list>* #talks				{font-size:.875em; width:8em; display:inline-block; opacity:.62;}
+#prdIdea>#list>* #answer			{font-size:.875em; opacity:.75;}
+</style>
+
+
+<bi id="prdIdea" class="abs box covers w100 flexCol prdTab" style="gap:11px;">
+	<div id="head" class="vc" style="gap:11px;">
+		<div class="vc round">
+			<div id="good" class="tab vc hc htop" style="padding:0 11px;">生产</div>
+			<div id="idea" class="tab vc hc htop" style="padding:0 11px;">想法</div>
+			<div id="vote" class="tab vc hc htop" style="padding:0 11px;">投票</div>
+		</div>
+		<div class="w1 round rel">
+			<input placeholder="搜索关键字" class="finder bold htop w100"/>
+			<svg aria-hidden="true" class="abs ic22 o38" style="top:7px;right:7px; transform: rotate(45deg);"><use xlink:href="#close"></use></svg>
+		</div>
+	</div>
+
+	<div id="list"></div>
+</bi>
+
+
+<script type="module">
+let selTab		= 1
+let root		= document.querySelector('body>#prdIdea')
+let tabs		= ['#good',  '#idea',  '#vote',	].map(it => document.querySelector('#prdIdea '	+ it))
+
+tabs	[selTab].classList.toggle('sel')
+
+root.querySelector('#head').addEventListener('click', ev => {
+	let newTab	= tabs.indexOf(ev.target)
+	console.log('switch tab', selTab, newTab);
+	if (-1 === newTab) return
+
+	;[tabs[selTab], tabs[newTab]].forEach(el => el?.classList.toggle('sel'))
+	selTab		= newTab
+
+	// TODO: refresh data list
+})
+
+let ideas		= [
+	{title:'主板的前置接口，可以放在背板上吗',	talks:19,	},
+	{title:'7700X + 4060Ti 能用300W电源和9015风扇吗',	talks:27,	answer:'可以 '},
+	{title:'顶盖是不是很容易落灰',	talks:35,	answer:'会有百叶窗设计'},
+]
+ideas = [...ideas, ...ideas, ...ideas, ...ideas, ...ideas, ...ideas, ...ideas, ...ideas, ...ideas]
+
+root.querySelector('#list').innerHTML	= ideas.map(it => `<div class="">
+	<div>${it.title}</div>
+	<div> <span id="talks">${it.talks}条讨论</span> ${it.answer  ?`<span id="answer">${it.answer}</span>`  :''} </div>
+</div>`).join('\n')
+</script>

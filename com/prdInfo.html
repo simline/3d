@@ -1,0 +1,51 @@
+<style>
+#prdinfo				{background:inherit;}
+#prdinfo.sel{background:var(--bg-c); -webkit-backdrop-filter:blur(30px); backdrop-filter:blur(30px);}
+.covers					{opacity:  0; z-index:-1;}
+.covers.sel				{opacity:  1; z-index: 1;}
+
+#prdinfo .tab			{opacity:.38; }
+#prdinfo .tab.sel		{opacity:  1; color:#f63; fill:#f63; font-weight:bold;}
+</style>
+
+
+<bi id="prdinfo" class="abs full box covers flexCol btmPad">
+	<div class="w1"></div>
+	<div class="vc w100 round" style="line-height:44px;">
+		<div id=""		style="padding:0 11px;" class="w1 bold">ITX主机 3.72L</div>
+		<div id="args"	style="padding:0 11px;" class="tab">参数</div>
+		<div id="idea"	style="padding:0 11px;" class="tab">讨论区</div>
+		<div id="rate"	style="padding:0 11px;" class="tab">购买评价</div>
+		<div id="close"><svg class="ic44" aria-hidden="true" style="fill:#f63;"><use xlink:href="#close"></use></svg></div>
+	</div>
+</bi>
+
+
+<script type="module">
+let showInfo	= false
+let selTab		= 0
+let root		= document.querySelector('body>#prdinfo')
+let tabs		= ['#args',		'#idea',		'#rate',	].map(it => document.querySelector('#prdinfo '	+ it))
+let tabViews	= ['#prdArgs',	'#prdIdea',		'#prdRate',	].map(it => document.querySelector('body>'		+ it))
+
+root.addEventListener('click', ev => {
+	let newTab	= tabs.indexOf(ev.target)
+	console.log('switch tab', selTab, newTab);
+	if (-1 === newTab) return
+
+	;[	tabs	[selTab],	tabs	[newTab],
+		tabViews[selTab],	tabViews[newTab]
+	].forEach(el => el?.classList.toggle('sel'))
+	selTab		= newTab
+})
+
+function showArgs() {
+	console.log('showArgs', selTab)
+	showInfo	= !showInfo
+	root.classList.toggle('sel')
+	tabs	[selTab].classList.toggle('sel')
+	tabViews[selTab].classList.toggle('sel')
+}
+window.addEventListener('showArgs', showArgs)
+document.querySelector('body>#prdinfo #close').addEventListener('click', showArgs)
+</script>

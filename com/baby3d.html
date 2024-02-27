@@ -1,0 +1,234 @@
+<style>
+#refresh			{display:none; }
+.standalone #refresh{display:flex; top:calc(44px + 4px + env(safe-area-inset-top)); right:11px; width:36px; height:36px; border-radius:11px;}
+.full+#refresh		{display:none; }
+
+#glb				{height:calc(100vh - 3*44px - env(safe-area-inset-bottom));}
+#parts *			{transition: all .3s;}
+#parts>.sel			{opacity:1;}
+#parts>*			{position: relative; width:44px; height:44px;}
+#parts>*>#tip		{font-weight:bold; white-space:nowrap; opacity:0; overflow:hidden;}
+#parts>.sel			{width:auto;}
+#parts>.sel>#tip	{padding-right:11px; opacity:1;}
+.txt				{cursor:pointer; opacity:.38; padding:0 11px; border-radius:11px; white-space:nowrap;}
+.sel.txt			{opacity:1.0; font-weight:bold;}
+.color				{cursor:pointer; width:22px; height:22px; margin:11px; border-radius:99px; background:var(--c); box-shadow:var(--shadow-c) 0 0 12px; position:relative;}
+.sel>.color			{box-shadow:none;}
+.sel>.color::after	{content:''; width:26px; height:26px; position:absolute; top:-4px; left:-4px; border:solid 2px var(--c); border-radius:99px; box-shadow:var(--shadow-c) 0 0 8px;}
+#partFocusMode	   svg {fill:#888;}
+#partFocusMode.sel svg {fill:#f63;}
+</style>
+
+<style>
+.pagerx				{overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+.pagery				{overflow-y:auto; scroll-snap-type:y mandatory; -webkit-overflow-scrolling:touch; }
+.pagerx>*, .pagery>*{scroll-snap-align:start; scroll-snap-stop:always;}
+</style>
+
+
+<bi id="baby3d">
+	<canvas id="glb" class="w100 abs"></canvas>
+	<div id="refresh" onclick="location.reload();" class="abs round vc hc">刷新</div>
+
+	<div id="btm" class="abs box w100 pagery" style="bottom:calc(0px - env(safe-area-inset-top)); height:209px; line-height:44px;">
+		<div class="btmPad">
+			<div id="com" class="round w100" style="height:132px;"></div>
+			<div id="com" class="round w100" style="height:44px;  margin-top:11px;"></div>
+		</div>
+		<div class="btmPad">
+			<div id="com" class="round" style="height:132px;">
+				<div class="vc w100 box">
+					<div id="parts" class="vc scrollx w1" style="width:0;"></div>
+					<div class="o38" style="width:.3px; height:16.5px; background:#888;"></div>
+					<div id="partFocusMode"> <svg class="ic44" aria-hidden="true" ><use xlink:href="#target2"></use></svg> </div>
+				</div>
+				<div id="glbs"   class="vc scrollx"></div>
+				<div id="colors" class="vc scrollx"></div>
+			</div>
+
+			<div id="link" class="vc round" style="margin-top:11px;">
+				<div class="w1" style="padding:0 11px;">赞助:无</div>
+				<div class="w1" style="padding:0 11px;">平台开源</div>
+				<div class="w2 o38">关注趋势 · 曲线</div>
+				<div id="showArgs"><svg class="ic44" aria-hidden="true" style="fill:#888;"><use xlink:href="#args"></use></svg></div>
+				<div id="lovePrd" ><svg class="ic44" aria-hidden="true" style="fill:#f63;"><use xlink:href="#love_hover"></use></svg></div>
+			</div>
+		</div>
+		<div class="btmPad">
+			<div id="com" class="round w100" style="height:132px;"></div>
+			<div id="com" class="round w100" style="height:44px;  margin-top:11px;"></div>
+		</div>
+	</div>
+</bi>
+
+
+<script src="https://unpkg.com/babylonjs@6.44.0/babylon.js"></script>
+<script src="https://unpkg.com/babylonjs-loaders@6.44.0/babylonjs.loaders.min.js"></script>
+<script src="/js/baby.js"></script>
+<script>
+function loadPart(prd, glb) {
+	if (glb.src)		return load3D(glb.src)
+	if (glb.builder)	return glb.builder(prd.size)
+}
+
+function focusPart(idx) {
+	console.debug('focusGlb', idx)
+	echo.uploadStatus()
+	prd.com	.forEach((com, iPart) => {
+		console.info('com.glb?.enums',idx==iPart, idx, iPart);
+
+		com.glb[com.selGlb||0]?.enums?.forEach((mesh, iMesh) => {
+			let alpha	= (!focusMode || idx==iPart)  ?1  :.1
+			console.debug('mesh?.getChildMeshes()', alpha, mesh?.getChildMeshes())
+			loopMesh(mesh, (m, im) => {
+				if (!m?.material) {
+					console.warn('no material', iPart, iMesh, im);
+					return
+				}
+				m.material.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND
+				m.material.alpha 			= alpha
+			})
+		})
+	})
+}
+
+function loadDefCom(prd, icom, iglb=0, icolor=0) {
+	if (!prd.com[icom].glb?.length) return
+
+	let glb		= prd.com[icom].glb[iglb]
+	glb.enums	= []
+
+	if (glb.repeat) {
+		glb.repeat.forEach(pos => {
+			let copy		= loadPart(prd, glb)
+			loopMesh(copy, (m, im) => {
+				m.material.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND
+			})
+			copy.position	= new BABYLON.Vector3(pos.x, pos.y, pos.z)
+			if (pos.rx) copy.rotation.x = pos.rx/180*Math.PI
+			if (pos.ry) copy.rotation.y = pos.ry/180*Math.PI
+			if (pos.rz) copy.rotation.z = pos.rz/180*Math.PI
+			// console.debug('repeat com', com.name, pos, copy.rotation);
+			glb.enums.push(copy)
+		})
+
+	} else {
+		glb.enums	= [loadPart(prd, glb)]
+	}
+}
+
+
+let focusMode		= false
+let prd				= {}
+let parts, glbs, colors
+
+colors	= new DomGroup(
+	'body>#baby3d #com #colors',
+	(color, i)		=> `<div data-i=${i}><div class="color" style="--c:${color}"></div></div>`,
+	(items, iColor, iGlb=glbs.lastSel, iPart=parts.lastSel) => {
+		// console.debug('color cb', iColor, iGlb);
+		prd.com[iPart].selColor	= iColor
+		prd.com[iPart].glb[iGlb].enums?.forEach(glb => {
+			let mat	= glb.material
+			if (!mat) {
+				mat				= new BABYLON.StandardMaterial("", scene)
+				glb.material	= mat
+				mat.metallic	= .6
+				mat.roughness	= .4
+				mat.maxSimultaneousLights = 99
+			}
+			mat.diffuseColor	= new BABYLON.Color3.FromHexString(items[iColor])
+
+			loopMesh(glb, m => {
+				m.material		= mat
+			})
+		})
+		echo.uploadStatus()
+	},
+)
+
+glbs	= new DomGroup(
+	'body>#baby3d #com #glbs',
+	(glb, i)		=> `<div data-i=${i} class="txt">${glb.name}</div>`,
+	(items, ig)		=> {
+		prd.com[parts.lastSel].selGlb	= ig
+		// prd.com[parts.lastSel].selColor	= 0
+		// dispose old glbs
+		// prd.com[parts.lastSel].glb[glbs.lastSel].enums?.forEach(model => model.dispose())
+		// build (or add) new glbs
+		if (prd.com[parts.lastSel].glb[ig].enums) {
+			// prd.com[parts.lastSel].glb[glbs.lastSel].enums?.forEach(model => scene.addMesh(model))
+		} else {
+			//
+		}
+		colors.render(prd.com[parts.lastSel].glb[glbs.lastSel].color,  prd.com[parts.lastSel].selColor)
+	},
+)
+
+parts	= new DomGroup(
+	'body>#baby3d #com #parts',
+	(com, i)		=> `<div data-i=${i} class="vc o38">
+			<svg class="ic44" aria-hidden="true"><use xlink:href="#${com.icon}"></use></svg>
+			<div id="tip">${com.name}</div>
+		</div>`,
+	(items, ipart)	=> {
+		if (focusMode) focusPart(ipart)
+
+		glbs	.render(prd.com[parts.lastSel].glb,						prd.com[parts.lastSel].selGlb)
+		colors	.render(prd.com[parts.lastSel].glb[glbs.lastSel].color,	prd.com[parts.lastSel].selColor)
+	},
+)
+
+function loadPrd(src) {
+	prd				= src
+
+	let js3d		= document.querySelector('body>#js3d')
+	js3d?.parentNode.removeChild(js3d)
+
+	// clear iconfont with old 3d prd
+	if (document.body.children[1].tagName=='svg') {
+		svgTags[0].parentNode.removeChild(svgTags[0]);
+	}
+
+	// part icons at iconfont.cn
+	Util.loadScript(prd.icons, 'icons')
+
+	parts	.render(prd.com)
+	prd.com	.forEach((com, iPart) => {
+		loadDefCom(prd, iPart, 0, 0)
+		if (com.glb?.length  &&  com.glb[0]?.color?.length) {
+			colors.cb(com.glb[com.selGlb||0].color,  com.selColor||0,  com.selGlb, iPart)
+			// console.debug('com i', iPart, com.selGlb||0, com.selColor||0, com.glb[com.selGlb||0].color);
+		}
+	})
+
+	window.dispatchEvent(new CustomEvent("loadProductArgs", {detail:prd}))
+}
+
+if (window.navigator.standalone)
+	document.body.classList.add('standalone')
+
+// simulate a product
+Util.loadScript('/prd/platform_itx3.72.js', 'js3d',  ()=> loadPrd(prd_platform_itx3720ml))
+
+let tgf		= document.querySelector('#partFocusMode')
+tgf.addEventListener('click', ev => {
+	focusMode		= !focusMode
+	tgf.classList.toggle('sel')
+	focusPart(parts.lastSel)
+})
+
+document.querySelector('#showArgs').addEventListener('click', ev => {
+	window.dispatchEvent(new CustomEvent("showArgs", {detail:prd}))
+	echo.uploadStatus('showArgs')
+})
+
+if (Util.isMobile) canvas.addEventListener('click', ev => {
+	document.querySelector('#btm'	).classList.toggle('none')
+	document.querySelector('#top'	).classList.toggle('none')
+	canvas.classList.toggle('full')
+	reloadEngine()
+})
+
+document.querySelector('#btm'	).scrollTo({top:209})
+</script>
