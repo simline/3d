@@ -8,7 +8,8 @@ let Util		= {
 		console.debug('loadScript', url, !!cb)
 		var script		= document.createElement('script')
 		script.id		= id
-		script.src		= `${url}?t=${Date.now()}`
+		// script.src		= `${url}?t=${Date.now()}`
+		script.src		= url
 		script.onload	= cb
 		document.body.appendChild(script)
 	},
@@ -19,7 +20,7 @@ let Util		= {
 		console.debug('loadComponent', Date.now(), url)
 		document.body.appendChild(document.createComment(url))
 
-		fetch(`com/${url}.html?t=${Date.now()}`)
+		fetch(`/com/${url}.html?t=${Date.now()}`)
 		.then(rsp => rsp.text())
 		.then(html => {
 			const doc		= parser.parseFromString(html, 'text/html');
@@ -59,6 +60,31 @@ let Util		= {
 			Util.handleScript(scripts)
 		}
 	},
+
+	// https://www.zhangxinxu.com/study/201904/scroll-snap-end-event-detect-demo.php
+	ViewPager(elPath, orientation=0, cb, defTab=1) {
+		cb && cb(defTab, defTab)
+
+		const offset		= orientation===0  ?'left'  :'top'
+		const rootEl		= document.querySelector(elPath)
+		let ScrollDetecter	= null
+		let oldIdx			= 0
+		// 滚动事件开始
+		rootEl.addEventListener('scroll', () => {
+			clearTimeout(ScrollDetecter)
+
+			ScrollDetecter = setTimeout(() => {
+				// 100毫秒内滚动事件没触发，认为停止滚动了，对列表元素进行位置检测
+				[].slice.call(rootEl.children).forEach((itemEl, newIdx) => {
+					if (Math.abs(itemEl.getBoundingClientRect()[offset] - rootEl.getBoundingClientRect()[offset]) > 10)
+						return
+					// console.log('滚动结束，当前显示的是第'+ (index + 1) +'个元素')
+					oldIdx!=newIdx && cb && cb(oldIdx, newIdx)
+					oldIdx	= newIdx
+				})
+			}, 1000/30)
+		})
+	}
 }
 
 
