@@ -19,7 +19,7 @@ let Util		= {
 		console.debug('loadComponent', Date.now(), url)
 		document.body.appendChild(document.createComment(url))
 
-		fetch(`/com/${url}.html?t=${Date.now()}`)
+		fetch(`com/${url}.html?t=${Date.now()}`)
 		.then(rsp => rsp.text())
 		.then(html => {
 			const doc		= parser.parseFromString(html, 'text/html');
