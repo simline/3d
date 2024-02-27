@@ -209,7 +209,7 @@ if (window.navigator.standalone)
 	document.body.classList.add('standalone')
 
 // simulate a product
-Util.loadScript('/prd/platform_itx3.72.js', 'js3d',  ()=> loadPrd(prd_platform_itx3720ml))
+Util.loadScript('prd/platform_itx3.72.js', 'js3d',  ()=> loadPrd(prd_platform_itx3720ml))
 
 let tgf		= document.querySelector('#partFocusMode')
 tgf.addEventListener('click', ev => {
