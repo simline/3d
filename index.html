@@ -1,7 +1,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>3D设计 共创 众筹</title>
+<title>设计 共创 众筹</title>
+<link rel="shortcut icon" type="image/svg+xml" href="3d.svg">
+<link rel="apple-touch-icon" href="3d.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <!-- safari page top background -->
@@ -92,10 +94,18 @@ body,input,textarea{font-size:13px;}
 	<img class="round htop box" style="width:36px; background:#f305;" src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraightStrand&accessoriesType=Prescription02&hairColor=Red&facialHairType=Blank&clotheType=Hoodie&eyeType=Happy&eyebrowType=Default&mouthType=Smile&skinColor=Pale"/>
 </div>
 <script>
-Util.loadComponent([ 'baby3d', 'prdArgs', 'prdIdea', 'prdSell', 'prdInfo', ])
-window.addEventListener('load', echo.init)
-window.addEventListener("visibilitychange", () => {
-	echo.uploadStatus(document.visibilityState)
-})
+if (navigator.userAgent.includes('CPU i') && !window.navigator.standalone)
+	document.body.innerHTML=`<div style="height:100%; font-size:1.25em; display:flex; justify-content:center; align-items:center; box-sizing:border-box; padding:3em;">
+		您正在使用iPhone或iPad访问，请点击Safari底部的分享按钮，添加至桌面。
+		<br><br>
+		You are accessing through iPhone or iPad，Please tap the share button of Safari and add to Home Screen.
+	</div>`
+else {
+	Util.loadComponent([ 'baby3d', 'prdArgs', 'prdIdea', 'prdSell', 'prdInfo', ])
+	window.addEventListener('load', echo.init)
+	window.addEventListener("visibilitychange", () => {
+		echo.uploadStatus(document.visibilityState)
+	})
+}
 </script>
 </body></html>

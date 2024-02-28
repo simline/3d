@@ -3,7 +3,7 @@
 #prdIdea .tab.sel		{opacity:  1; color:#f63; fill:#f63; font-weight:bold;}
 
 #prdIdea>#list			{overflow-y:auto;}
-#prdIdea>#list>*					{padding:11px 11px 5.5px; box-sizing:border-box; margin-bottom:11px; border-radius:11px; background:#8881;}
+#prdIdea>#list>*					{padding:11px 11px 5.5px; box-sizing:border-box; margin-bottom:11px; border-radius:11px; background:#8888880b;}
 #prdIdea>#list>*>:first-child		{font-weight:bold; margin-bottom:11px;}
 #prdIdea>#list>* #talks				{font-size:.875em; width:8em; display:inline-block; opacity:.62;}
 #prdIdea>#list>* #answer			{font-size:.875em; opacity:.75;}
@@ -52,7 +52,7 @@ let ideas		= [
 ]
 ideas = [...ideas, ...ideas, ...ideas, ...ideas, ...ideas, ...ideas, ...ideas, ...ideas, ...ideas]
 
-root.querySelector('#list').innerHTML	= ideas.map(it => `<div class="">
+root.querySelector('#list').innerHTML	= ideas.map(it => `<div>
 	<div>${it.title}</div>
 	<div> <span id="talks">${it.talks}条讨论</span> ${it.answer  ?`<span id="answer">${it.answer}</span>`  :''} </div>
 </div>`).join('\n')
