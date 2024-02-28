@@ -58,8 +58,8 @@
 	</div>
 </bi>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/6.44.0/babylon.min.js"></script>
-<!-- <script src="https://unpkg.com/babylonjs@6.44.0/babylon.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/6.44.0/babylon.min.js"></script> -->
+<script src="https://unpkg.com/babylonjs@6.44.0/babylon.js"></script>
 <script src="https://unpkg.com/babylonjs-loaders@6.44.0/babylonjs.loaders.min.js"></script>
 <script src="js/baby.js"></script>
 <script>
@@ -176,26 +176,34 @@ parts	= new DomGroup(
 	},
 )
 
-function loadPrd(src) {
-	prd				= src
-
+function loadPrd(prd) {
 	let js3d		= document.querySelector('body>#js3d')
 	js3d?.parentNode.removeChild(js3d)
 
 	// clear iconfont with old 3d prd
 	if (document.body.children[1].tagName=='svg') {
-		svgTags[0].parentNode.removeChild(svgTags[0]);
+		document.body.removeChild(document.body.children[0])
 	}
 
 	// part icons at iconfont.cn
 	Util.loadScript(prd.icons, 'icons')
+	glbs	.lastSel
+	colors	.lastSel= 0
+	focusMode		= false
+	camera.alpha	= BABYLON.Tools.ToRadians(45)
+	camera.beta		= BABYLON.Tools.ToRadians(60)
+	camera.radius	= 140*4
+
+	scene.meshes.forEach(function(mesh) {
+		mesh.dispose()
+		scene.removeMesh(mesh)
+	});
 
 	parts	.render(prd.com)
 	prd.com	.forEach((com, iPart) => {
 		loadDefCom(prd, iPart, 0, 0)
 		if (com.glb?.length  &&  com.glb[0]?.color?.length) {
 			colors.cb(com.glb[com.selGlb||0].color,  com.selColor||0,  com.selGlb, iPart)
-			// console.debug('com i', iPart, com.selGlb||0, com.selColor||0, com.glb[com.selGlb||0].color);
 		}
 	})
 
@@ -205,15 +213,13 @@ function loadPrd(src) {
 if (window.navigator.standalone)
 	document.body.classList.add('standalone')
 
-// simulate a product
-Util.loadScript('prd/platform_itx3.72.js', 'js3d',  ()=> loadPrd(prd_platform_itx3720ml))
-
-let tgf		= document.querySelector('#partFocusMode')
-tgf.addEventListener('click', ev => {
+let tgf				= document.querySelector('#partFocusMode')
+let updFocusMode	= () => {
 	focusMode		= !focusMode
 	tgf.classList.toggle('sel')
 	focusPart(parts.lastSel)
-})
+}
+tgf.addEventListener('click', updFocusMode)
 
 document.querySelector('#showArgs').addEventListener('click', ev => {
 	window.dispatchEvent(new CustomEvent("showArgs", {detail:prd}))
@@ -221,8 +227,8 @@ document.querySelector('#showArgs').addEventListener('click', ev => {
 })
 
 if (Util.isMobile) canvas.addEventListener('click', ev => {
-	document.querySelector('#btm'	).classList.toggle('none')
-	document.querySelector('#top'	).classList.toggle('none')
+	document.querySelector('#btm').classList.toggle('none')
+	document.querySelector('#top').classList.toggle('none')
 	canvas.classList.toggle('full')
 	reloadEngine()
 })
@@ -230,5 +236,7 @@ if (Util.isMobile) canvas.addEventListener('click', ev => {
 Util.ViewPager('#btm', 1, (oldIdx, newIdx)=> {
 	if (oldIdx!=1) return
 	document.querySelector('#btm>:nth-child(2)'	).scrollIntoView({behavior:'instant'})
+	tgf.classList.remove('sel')
+	Util.loadScript('prd/platform_itx3.72.js', 'js3d',  ()=> loadPrd(prd))
 })
 </script>
