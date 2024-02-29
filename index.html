@@ -77,8 +77,8 @@ body,input,textarea{font-size:13px;}
 }
 </style>
 
-<script src="js/util.js?t=5"></script>
-<script src="js/echo.js?t=5"></script>
+<script src="js/util.js?t=6"></script>
+<script src="js/echo.js?t=6"></script>
 <!-- iconfont for app -->
 <script src="//at.alicdn.com/t/c/font_4443303_pz96c6w6zh.js"></script>
 </head>
@@ -94,13 +94,14 @@ body,input,textarea{font-size:13px;}
 	<img class="round htop box" style="width:36px; background:#f305;" src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraightStrand&accessoriesType=Prescription02&hairColor=Red&facialHairType=Blank&clotheType=Hoodie&eyeType=Happy&eyebrowType=Default&mouthType=Smile&skinColor=Pale"/>
 </div>
 <script>
-if (navigator.userAgent.includes('CPU i') && !window.navigator.standalone)
+if (navigator.userAgent.includes('CPU i') && !window.navigator.standalone) {
 	document.body.innerHTML=`<div style="height:100%; font-size:1.25em; display:flex; justify-content:center; align-items:center; box-sizing:border-box; padding:3em;">
 		您正在使用iPhone或iPad访问，请点击Safari底部的分享按钮，添加至桌面。
 		<br><br>
 		You are accessing through iPhone or iPad，Please tap the share button of Safari and add to Home Screen.
 	</div>`
-else {
+
+} else {
 	Util.loadComponent([ 'baby3d', 'prdArgs', 'prdIdea', 'prdSell', 'prdInfo', ])
 	window.addEventListener('load', echo.init)
 	window.addEventListener("visibilitychange", () => {

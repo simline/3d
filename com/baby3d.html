@@ -29,8 +29,7 @@
 
 	<div id="btm" class="abs box w100 flex pagery" style="bottom:calc(0px - env(safe-area-inset-top)); height:calc(max(11px, env(safe-area-inset-bottom)) + 4*44px + 2*11px); line-height:44px;">
 		<div class="btmPad w100 box">
-			<div id="com" class="round w100" style="height:132px;"></div>
-			<div id="com" class="round w100" style="height:44px;  margin-top:11px;"></div>
+			<div id="com" class="round w100" style="height:187px;"></div>
 		</div>
 		<div class="btmPad w100 box">
 			<div id="com" class="round" style="height:132px;">
@@ -52,8 +51,7 @@
 			</div>
 		</div>
 		<div class="btmPad w100 box">
-			<div id="com" class="round w100" style="height:132px;"></div>
-			<div id="com" class="round w100" style="height:44px;  margin-top:11px;"></div>
+			<div id="com" class="round w100" style="height:187px;"></div>
 		</div>
 	</div>
 </bi>
@@ -61,7 +59,9 @@
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/6.44.0/babylon.min.js"></script> -->
 <script src="https://unpkg.com/babylonjs@6.44.0/babylon.js"></script>
 <script src="https://unpkg.com/babylonjs-loaders@6.44.0/babylonjs.loaders.min.js"></script>
-<script src="js/baby.js"></script>
+<!-- <script src="js/babylon.js"></script> -->
+<!-- <script src="js/babylonjs.loaders.min.js"></script> -->
+<script src="js/baby.js?v=2"></script>
 <script>
 function loadPart(prd, glb) {
 	if (glb.src)		return load3D(glb.src)
@@ -72,7 +72,7 @@ function focusPart(idx) {
 	console.debug('focusGlb', idx)
 	echo.uploadStatus()
 	prd.com	.forEach((com, iPart) => {
-		console.info('com.glb?.enums',idx==iPart, idx, iPart);
+		// console.info('com.glb?.enums',idx==iPart, idx, iPart);
 
 		com.glb[com.selGlb||0]?.enums?.forEach((mesh, iMesh) => {
 			let alpha	= (!focusMode || idx==iPart)  ?1  :.1
@@ -85,6 +85,7 @@ function focusPart(idx) {
 				m.material.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND
 				m.material.alpha 			= alpha
 			})
+			scene.render()
 		})
 	})
 }
@@ -138,6 +139,7 @@ colors	= new DomGroup(
 
 			loopMesh(glb, m => {
 				m.material		= mat
+				scene.render()
 			})
 		})
 		echo.uploadStatus()
@@ -179,7 +181,7 @@ parts	= new DomGroup(
 function loadPrd(prd) {
 	let js3d		= document.querySelector('body>#js3d')
 	js3d?.parentNode.removeChild(js3d)
-
+	
 	// clear iconfont with old 3d prd
 	if (document.body.children[1].tagName=='svg') {
 		document.body.removeChild(document.body.children[0])
@@ -187,18 +189,7 @@ function loadPrd(prd) {
 
 	// part icons at iconfont.cn
 	Util.loadScript(prd.icons, 'icons')
-	glbs	.lastSel
-	colors	.lastSel= 0
-	focusMode		= false
-	camera.alpha	= BABYLON.Tools.ToRadians(45)
-	camera.beta		= BABYLON.Tools.ToRadians(60)
-	camera.radius	= 140*4
-
-	scene.meshes.forEach(function(mesh) {
-		mesh.dispose()
-		scene.removeMesh(mesh)
-	});
-
+	
 	parts	.render(prd.com)
 	prd.com	.forEach((com, iPart) => {
 		loadDefCom(prd, iPart, 0, 0)
@@ -214,12 +205,11 @@ if (window.navigator.standalone)
 	document.body.classList.add('standalone')
 
 let tgf				= document.querySelector('#partFocusMode')
-let updFocusMode	= () => {
+tgf.addEventListener('click', () => {
 	focusMode		= !focusMode
 	tgf.classList.toggle('sel')
 	focusPart(parts.lastSel)
-}
-tgf.addEventListener('click', updFocusMode)
+})
 
 document.querySelector('#showArgs').addEventListener('click', ev => {
 	window.dispatchEvent(new CustomEvent("showArgs", {detail:prd}))
@@ -235,6 +225,17 @@ if (Util.isMobile) canvas.addEventListener('click', ev => {
 
 Util.ViewPager('#btm', 1, (oldIdx, newIdx)=> {
 	if (oldIdx!=1) return
+	glbs	.lastSel
+	colors	.lastSel= 0
+	focusMode		= false
+	camera.alpha	= BABYLON.Tools.ToRadians(45)
+	camera.beta		= BABYLON.Tools.ToRadians(60)
+	camera.radius	= 140*4
+
+	scene.meshes.forEach(function(mesh) {
+		mesh.dispose()
+		scene.removeMesh(mesh)
+	});
 	document.querySelector('#btm>:nth-child(2)'	).scrollIntoView({behavior:'instant'})
 	tgf.classList.remove('sel')
 	Util.loadScript('prd/platform_itx3.72.js', 'js3d',  ()=> loadPrd(prd))

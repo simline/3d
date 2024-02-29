@@ -1,38 +1,69 @@
 console.time('init baby')
-let canvas			= document.getElementById("glb")
-let engine			= new BABYLON.Engine(canvas, true)
-let scene			= new BABYLON.Scene(engine);
-
-let camera			= new BABYLON.ArcRotateCamera("camera", 
+let canvas				= document.getElementById("glb")
+let engine				= new BABYLON.Engine(canvas, true)
+let scene				= new BABYLON.Scene(engine);
+let loading				= true
+let camera				= new BABYLON.ArcRotateCamera("camera", 
 	// BABYLON.Tools.ToRadians(-90), BABYLON.Tools.ToRadians(90), 140*4.5, 
 	BABYLON.Tools.ToRadians(45), BABYLON.Tools.ToRadians(60), 140*4,
 	new BABYLON.Vector3(0, 0, 0),
 	scene
 )
 // scene.clearColor	= new BABYLON.Color3 ( .95, .95, .95)
-scene.clearColor	= new BABYLON.Color4 (0,0,0,0)
+scene.clearColor		= new BABYLON.Color4 (0,0,0,0)
 // let axisViewer		= new BABYLON.AxesViewer(scene, 200, BABYLON.Axis.XYZW, null, null, null, 0.05)
+
+// who cpu core running, use `scene.render()` in every moment instead!
+// engine.runRenderLoop(()=> loading && scene.render())
+let inertialActLoops	= 0
+function inertialAct(loops=144) {
+	// avoid  duplicate tigger by multi UI events
+	if (inertialActLoops) {
+		inertialActLoops= loops
+		return
+	}
+	inertialActLoops	= loops
+
+	function render() {
+		if (--inertialActLoops > 0) {
+			scene.isRendering || scene.render()
+			window.requestAnimationFrame(render)
+		}
+	}
+	window.requestAnimationFrame(render)
+}
+
+canvas.addEventListener("pointermove",	_ => scene.isRendering || scene.render())
+canvas.addEventListener("pointerdown",	_ => inertialAct())
+canvas.addEventListener("pointerup",	_ => inertialAct())
+canvas.addEventListener("wheel",		_ => inertialAct())
+canvas.addEventListener("keydown",		ev=> {
+	['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(ev.key)  &&  inertialAct()
+});
 
 // camera.radius	= Math.min(window.innerHeight, window.innerWidth) / 4.5 * (window.devicePixelRatio>1  ?window.devicePixelRatio/2  :1); // 根据需求进行调整
 // camera.alpha	= BABYLON.Tools.ToRadians(window.innerHeight>window.innerWidth  ?90  :0)
-let reloadEngine	= () => {
+let reloadEngine		= () => {
 	engine.resize()
 	var devicePixelRatio= window.devicePixelRatio || 1
 	canvas.width		= devicePixelRatio * canvas.clientWidth
 	canvas.height		= devicePixelRatio * canvas.clientHeight
+	inertialAct(15)
 }
 reloadEngine()
 camera.attachControl(canvas, true)
+// camera.wheelDeltaPercentage = 0.01; // 设置鼠标滚轮缩放速度
+// camera.inertialRadiusOffset = 50; // 设置缩放惯性动画的表现
 
-engine.runRenderLoop(()=> scene.render())
-window.addEventListener("resize", reloadEngine)
+window.addEventListener("resize",		reloadEngine)
 
-new BABYLON.DirectionalLight("", new BABYLON.Vector3(-1, 0, 0), scene).intensity = .62
-new BABYLON.DirectionalLight("", new BABYLON.Vector3( 1, 0, 0), scene).intensity = .62
-new BABYLON.DirectionalLight("", new BABYLON.Vector3( 0,-1, 0), scene).intensity = .62
-new BABYLON.DirectionalLight("", new BABYLON.Vector3( 0, 1, 0), scene).intensity = .62
-new BABYLON.DirectionalLight("", new BABYLON.Vector3( 0, 0,-1), scene).intensity = .62
-new BABYLON.DirectionalLight("", new BABYLON.Vector3( 0, 0, 1), scene).intensity = .62
+
+new BABYLON.DirectionalLight("", new BABYLON.Vector3(-1, 0, 0), scene)//.intensity = .8
+new BABYLON.DirectionalLight("", new BABYLON.Vector3( 1, 0, 0), scene)//.intensity = .8
+new BABYLON.DirectionalLight("", new BABYLON.Vector3( 0,-1, 0), scene)//.intensity = .8
+new BABYLON.DirectionalLight("", new BABYLON.Vector3( 0, 1, 0), scene)//.intensity = .8
+new BABYLON.DirectionalLight("", new BABYLON.Vector3( 0, 0,-1), scene)//.intensity = .8
+new BABYLON.DirectionalLight("", new BABYLON.Vector3( 0, 0, 1), scene)//.intensity = .8
 
 // new BABYLON.DirectionalLight("", new BABYLON.Vector3(-1,-1, 0), scene).intensity = .4
 // new BABYLON.DirectionalLight("", new BABYLON.Vector3( 1, 1, 0), scene).intensity = .4

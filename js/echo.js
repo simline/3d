@@ -7,7 +7,7 @@ let echo			= {
 	uploadStatus	: (event='') => {
 		if (!windowLoad) return
 
-		fetch('action?data=' + [
+		fetch('action?data='+ [
 			'time:'			+ Date.now(),
 			'times:'		+ (++times),
 			'uuid:'			+ (echo.uuid ?? ''),
@@ -22,14 +22,16 @@ let echo			= {
 	},
 
 	init			: () => {
+		if (window.location.host.startsWith('192')) return
+
 		windowLoad	= true
-		
+
 		fetch('https://api.ipify.org')
 		.then(response => response.text())
 		.then(data => echo.uuid = data)
 		.catch(console.error)
 		.finally(() => {
-			fetch('action?info=' + [
+			fetch('action?data='+ [
 				'time:'			+ Date.now(),
 				'uuid:'			+ (echo.uuid ?? ''),
 				'standalone:'	+ !!window.navigator.standalone,

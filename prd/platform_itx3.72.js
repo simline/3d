@@ -1,4 +1,4 @@
-let prd_platform_itx3720ml = {
+prd			= {
 	id		: 1,
 	auther	: 1,
 	cate	: 1,

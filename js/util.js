@@ -7,8 +7,8 @@ let Util		= {
 	loadScript			: (url, id, cb) => {
 		console.debug('loadScript', url, !!cb)
 		var script		= document.createElement('script')
-		script.id		= id
-		// script.src		= `${url}?t=${Date.now()}`
+		// script.id		= id
+		script.src		= `${url}?t=${Date.now()}`
 		script.src		= url
 		script.onload	= cb
 		document.body.appendChild(script)
