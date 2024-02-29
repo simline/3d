@@ -108,10 +108,12 @@ function loadDefCom(prd, icom, iglb=0, icolor=0) {
 			if (pos.rz) copy.rotation.z = pos.rz/180*Math.PI
 			// console.debug('repeat com', com.name, pos, copy.rotation);
 			glb.enums.push(copy)
+			scene.render()
 		})
 
 	} else {
 		glb.enums	= [loadPart(prd, glb)]
+		scene.render()
 	}
 }
 
